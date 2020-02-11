@@ -16,8 +16,8 @@ const morganOption = (NODE_ENV === 'production')
 app.use(morgan(morganOption));
 app.use(helmet());
 app.use(cors());
-app.use('/game', GameRouter);
-app.use('/player', PlayerRouter);
+app.use('/api/game', GameRouter);
+app.use('/api/player', PlayerRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, boilerplate!');
