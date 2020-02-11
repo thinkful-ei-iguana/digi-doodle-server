@@ -2,11 +2,13 @@ const uuid = require('uuid');
 
 const PlayerServices = {
   createPlayer(db, username) {
-    return db('player')
+    let playerUUID = uuid();
+    return db
       .insert({
-        id: uuid(),
+        id: playerUUID,
         username: username
       })
+      .into('player')
       .returning('id');
   }
 };

@@ -9,15 +9,16 @@ PlayerRouter
 
 PlayerRouter
   .post('/', async (req, res, next) => {
-    const userName = req.body;
-
+    const userName = req.body.username;
+  
+    console.log(userName);
     if (!userName){
       return res.status(404).json({
         error: `No username found!`
       })
     }
     try{
-      const playerId = PlayerSerivces.createPlayer(
+      const playerId = await PlayerServices.createPlayer(
         req.app.get('db'),
         userName
       );
