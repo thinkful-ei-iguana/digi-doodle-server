@@ -1,7 +1,7 @@
 const uuid = require('uuid');
 
 const GameServices = {
-  createGame(db, player_id) {
+  createGame(db) {
     const game = {
       id: uuid(),
       canvas: '',
@@ -10,8 +10,9 @@ const GameServices = {
       time_limit: 6000
     };
 
-    return db('game')
+    return db
       .insert(game)
+      .into('game')
       .returning('*');
   }
 };

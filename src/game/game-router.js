@@ -9,8 +9,8 @@ GameRouter
 
 GameRouter
   .post('/', async (req, res, next) => {
-      try{
-        const game = await GameServices.createGame(req.app.get('db'), req.player.id)
+    try{
+        const game = await GameServices.createGame(req.app.get('db'))
 
       if (!game)
       return res.status(404).json({
