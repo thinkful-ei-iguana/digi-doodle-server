@@ -87,6 +87,24 @@ GameRouter
 
 GameRouter
   .route('/:gameId')
+  .patch(async (req, res, next) => {
+    //get next player
+    //get next word
+    const change = req.body;
+
+    try {
+      const changedGame = await GameServices.changeGame(req.app.get('db'), change);
+      if(!changedGame){
+        return res.status(400).json({
+          error: 'Something when wrong when changing the game.'
+        });
+      }
+
+      res.send(changedGame);
+    } catch(error) {
+      next(error);
+    }
+  })
   .delete(async (req, res, next) => {
     let id = req.params.gameId;
     try {

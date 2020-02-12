@@ -67,7 +67,17 @@ const GameServices = {
       .from('game')
       .where('id', gameId)
       .delete();
+  },
+
+  makePlayerQueue(db,gameId){
+
+  },
+
+  changeGame(db, change){
+    //change to database will go in here.
+
   }
+
 
 };
 
