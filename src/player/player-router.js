@@ -17,10 +17,12 @@ PlayerRouter
       });
     }
     try{
-      const uniqueCheck = await PlayerServices.checkForUsername(req.app.get('db'), userName);
+      let uniqueCheck = await PlayerServices.checkForUsername(req.app.get('db'), userName);
+      console.log('uniqueCheck: ', uniqueCheck[0]);
 
-      if (uniqueCheck)
+      if (uniqueCheck[0] !== undefined) {
         return res.status(400).json({ error: 'Duplicate usernames are not allowed' });
+      }
 
       const playerId = await PlayerServices.createPlayer(
         req.app.get('db'),
