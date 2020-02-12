@@ -55,7 +55,6 @@ GameRouter
   .route('/:gameId/player')
   .get(async (req, res, next) => {
     let id = req.params.gameId;
-    console.log(id);
     try{
       const scores = await GameServices.getPlayers(req.app.get('db'), id);
       if(!scores){
@@ -63,7 +62,6 @@ GameRouter
           error: 'There appear to be no players in this game.'
         });
       }
-      console.log(scores);
       res.send(scores);
 
     } catch(error) {
