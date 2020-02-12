@@ -30,4 +30,14 @@ PlayerRouter
     }
   })
 
+PlayerRouter
+  .delete('/:playerId', (req, res, next) => {
+    console.log(req.params.playerId);
+    PlayerServices.deletePlayer(req.app.get('db'), req.params.playerId)
+      .then(() => 
+        res.send(204)
+      )
+      .catch(next);
+  })
+
 module.exports = PlayerRouter;
