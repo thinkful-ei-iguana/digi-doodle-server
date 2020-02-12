@@ -10,6 +10,12 @@ const PlayerServices = {
       })
       .into('player')
       .returning('id');
+  },
+
+  deletePlayer(db, playerId) {
+    return db('player')
+      .where('id', playerId)
+      .delete();
   }
 };
 

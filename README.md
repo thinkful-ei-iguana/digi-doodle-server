@@ -27,5 +27,12 @@ OTHER TOOLS -
 >> request format: { "username":"usernameHere" }
 >> response format: { "uuidHere" }
 
+> /player/:playerId - method:delete - Deletes the player. Accepts the player_id, and returns 204 (no content) if successful.
+>> request format: { "username":"usernameHere" }
+>> response format: { "uuidHere" }
+
 > /game - method:post - writes a new game to database. This returns the game object from database.
 >> response format: { "id": uuid(), "canvas":"canvasURL", "current_drawer": null, "current_answer": null, "time_limit": 6000 }
+
+> /prompt - method:get - produces a random prompt from the database.
+>> response format: { "prompt": "prompt-text-here"}

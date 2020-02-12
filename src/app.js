@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const GameRouter = require('./game/game-router');
 const PlayerRouter = require('./player/player-router');
+const PromptRouter = require('./prompt/prompt-router');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(helmet());
 app.use(cors());
 app.use('/api/game', GameRouter);
 app.use('/api/player', PlayerRouter);
+app.use('/api/prompt', PromptRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, boilerplate!');
