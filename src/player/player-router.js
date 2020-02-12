@@ -14,10 +14,15 @@ PlayerRouter
     console.log(userName);
     if (!userName){
       return res.status(404).json({
-        error: `No username found!`
-      })
+        error: 'No username found!'
+      });
     }
     try{
+      const uniqueCheck = await PlayerServices.checkForUsername(req.app.get('db'), userName);
+
+      if (uniqueCheck)
+        return res.status(400).json({ error: 'Duplicate usernames are not allowed' });
+
       const playerId = await PlayerServices.createPlayer(
         req.app.get('db'),
         userName
@@ -25,10 +30,11 @@ PlayerRouter
      
       console.log(playerId);
       res.send(playerId);
+      
     } catch(error) {
       next(error);
     }
-  })
+  });
 
 PlayerRouter
   .delete('/:playerId', (req, res, next) => {
@@ -38,6 +44,6 @@ PlayerRouter
         res.send(204)
       )
       .catch(next);
-  })
+  });
 
 module.exports = PlayerRouter;

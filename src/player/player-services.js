@@ -16,6 +16,13 @@ const PlayerServices = {
     return db('player')
       .where('id', playerId)
       .delete();
+  },
+
+  checkForUsername(db, username) {
+    return db
+      .from('player')
+      .select('*')
+      .where('username', username);
   }
 };
 
