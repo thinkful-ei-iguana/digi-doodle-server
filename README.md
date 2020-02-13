@@ -182,12 +182,20 @@ No request body required.
 >[
 >  {
 >    "score": 12,
->		 "username": "firstusernamehere"
+>		 "username": "first user name here",
+>    "id": "row number for game_players table",
+>    "player_id": "player uuid",
+>    "game_id": "game uuid",
+>    "next_player": "uuid of player who's turn is after this player's"
 >  },
 >  {
 >    "score": 8,
->    "username": "secondusernamehere"
->  }
+>		 "username": "second username here",
+>    "id": "row number for game_players table",
+>    "player_id": "player uuid",
+>    "game_id": "game uuid",
+>    "next_player": "uuid of player who's turn is after this player's"
+>  },
 >]
 >```
 
