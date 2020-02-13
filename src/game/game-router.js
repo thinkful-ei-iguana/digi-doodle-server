@@ -12,11 +12,6 @@ GameRouter
   .get(async (req, res, next) => {
     try{
       const allGames = await GameServices.getAllGames(req.app.get('db'));
-
-      if (!allGames) 
-        return res.status(404).json({
-          error: 'No games found. Start a new game!'
-        });
       
       res.send(allGames);
     } catch(error) {
@@ -57,19 +52,11 @@ GameRouter
     let id = req.params.gameId;
     try{
       const scores = await GameServices.getPlayers(req.app.get('db'), id);
-      if(!scores){
-        return res.status(404).json({
-          error: 'There appear to be no players in this game.'
-        });
-      }
       res.send(scores);
-
     } catch(error) {
       next(error);
     }
-  });
-GameRouter
-  .route('/:gameId/join')
+  })
   .post(async (req, res, next) => {
     const { playerId } = req.body;
     const id = req.params.gameId;
@@ -82,6 +69,8 @@ GameRouter
       next(error);
     }
   });
+
+  
 
 GameRouter
   .route('/:gameId')
