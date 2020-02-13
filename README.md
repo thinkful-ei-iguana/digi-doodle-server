@@ -56,6 +56,7 @@ Receives a username in a req.body and then writes a new user to the database. Th
 >	"error": "No username found!"
 >}
 >```
+
 ~~____________________________________________________~~
 
 ## /api/player/:player_id - POST
@@ -70,6 +71,7 @@ No request body required.
 
 **Error Response**
 >No error handling thus far
+
 ~~____________________________________________________~~
 
 ## /api/game - POST
@@ -100,6 +102,7 @@ No body is required.
 >	"error": "No game found!"
 >}
 >```
+
 ~~____________________________________________________~~
 
 ## /api/game - GET
@@ -133,6 +136,7 @@ No body is required.
 **Error Response**
 >No error handling thus far
 >
+
 ~~____________________________________________________~~
 
 ## /api/game/guess - POST
@@ -246,6 +250,7 @@ Takes any fields you wish to change in the game row. Returns the game with chang
 >  "error": "Something when wrong when changing the game."
 >}
 >```
+
 ~~____________________________________________________~~
 
 ## /api/game/:game_id - DELETE
@@ -280,4 +285,5 @@ No request body needed.
 
 **Error Response**
 > No error catching for the moment.
+
 ~~____________________________________________________~~
