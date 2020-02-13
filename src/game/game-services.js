@@ -25,7 +25,7 @@ const GameServices = {
   getPlayers(db, gameId) {
     return db
       .from('game_players')
-      .select('*')
+      .select('username', 'score')
       .where('game_id', gameId);
   },
 
@@ -36,17 +36,17 @@ const GameServices = {
       .where('id', gameId);
   },
 
-  addGamePlayer(db, gameId, playerId){
+  addGamePlayer(db, gameId, playerId, username){
     let gamePlayer = {
       player_id: playerId,
+      username: username,
       game_id: gameId,
       score: 0
     };
 
     return db
       .insert(gamePlayer)
-      .into('game_players')
-      .returning('*');
+      .into('game_players');
   },
 
   postGuess(db, gameId, playerId, guess) {

@@ -170,7 +170,7 @@ Receives gameId, playerId, and guess. Eventually will return whether the guess i
 ~~____________________________________________________~~
 
 ## /api/game/:game_id/player - GET
-Returns all players in a given game. Should change later to contain username.
+Returns all players' usernames and scores in a given game.
 
 **Request Format**:
 No request body required.
@@ -181,16 +181,12 @@ No request body required.
 >```json
 >[
 >  {
->    "id": 3,
 >    "score": 12,
->    "player_id": "cbc23c6a-4a83-4365-8c55-793a6ec8c59d",
->    "game_id": "9756fb9f-e421-4ff1-ae3b-b16161625a26"
+>		 "username": "firstusernamehere"
 >  },
 >  {
->    "id": 4,
 >    "score": 8,
->    "player_id": "cefe3g34a-hth5-51dh-8c55-e1fw15wf19w",
->    "game_id": "wwfwfw3y-nas8-sf39-d6h9-athst3455gwsg"
+>    "username": "secondusernamehere"
 >  }
 >]
 >```
@@ -201,12 +197,13 @@ No request body required.
 ~~____________________________________________________~~
 
 ## /api/game/:game_id/player - POST
-Takes a player id, and enters that player into the given game. Returns the created row with an initiated score of 0.
+Takes a player id and a username, and enters that player into the given game. Returns the created row with an initiated score of 0.
 
 **Request Format**:
 ```json
 {
-  "playerId": "cefe3g34a-hth5-51dh-8c55-e1fw15wf19w"
+	"playerId": "cefe3g34a-hth5-51dh-8c55-e1fw15wf19w",
+	"username": "myusernamehere"
 }
 ```
 **Success Response**

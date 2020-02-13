@@ -58,11 +58,11 @@ GameRouter
     }
   })
   .post(async (req, res, next) => {
-    const { playerId } = req.body;
+    const { playerId, username } = req.body;
     const id = req.params.gameId;
 
     try{
-      await GameServices.addGamePlayer(req.app.get('db'), id, playerId);
+      await GameServices.addGamePlayer(req.app.get('db'), id, playerId, username);
 
       res.send(204).end();
     } catch(error) {
@@ -81,6 +81,7 @@ GameRouter
 
     try {
       const changedGame = await GameServices.changeGame(req.app.get('db'), change);
+
       if(!changedGame){
         return res.status(400).json({
           error: 'Something when wrong when changing the game.'
