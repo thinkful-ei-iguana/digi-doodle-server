@@ -42,7 +42,7 @@ const GameServices = {
     let gamePlayer;
 
     if (players.length < 1) {
-      console.log("first player");
+      console.log('first player');
       gamePlayer = {
         player_id: playerId,
         username: username,
@@ -51,7 +51,7 @@ const GameServices = {
         next_player: playerId
       };
     } else {
-      console.log("second player");
+      console.log('second player');
       gamePlayer = {
         player_id: playerId,
         username: username,

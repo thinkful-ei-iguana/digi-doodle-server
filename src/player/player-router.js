@@ -18,7 +18,6 @@ PlayerRouter
     }
     try{
       let uniqueCheck = await PlayerServices.checkForUsername(req.app.get('db'), userName);
-      console.log('uniqueCheck: ', uniqueCheck[0]);
 
       if (uniqueCheck[0] !== undefined) {
         return res.status(400).json({ error: 'Duplicate usernames are not allowed' });

@@ -15,24 +15,19 @@ const db = knex({
 app.set('db', db);
 
 io(server)
-  .of('/socket/')
   .on('connection', (socket) => {
-    // console.log('socket appears to be working');
+    socket.on('sendRoom', (room) => {
 
-    var room = socket.handshake['query']['gameId'];
-    console.log(socket.handshake);
-
-    socket.join(room);
-    console.log('socket after join: ', socket);
-    console.log('user joined room ' + room);
-    
-    socket.on('disconnect', () => {
-      socket.leave(room);
-      console.log('user disconnected');
+      socket.join(room);
+      socket.emit('chat message', `joined room ${room}`);
+      socket.on('guess', (guess) => {
+        console.log('guess here: ', guess);
+        socket.emit('chat message', `${guess}`);
+      });
     });
 
     socket.on('chat message', (msg) => {
-      io(server).to(room).emit('chat message: ', msg);
+      io.emit('chat message', msg);
     });
 
   });
