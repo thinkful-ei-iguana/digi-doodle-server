@@ -6,8 +6,6 @@ const { NODE_ENV } = require('./config');
 const GameRouter = require('./game/game-router');
 const PlayerRouter = require('./player/player-router');
 const PromptRouter = require('./prompt/prompt-router');
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
 
 const app = express();
 
@@ -36,14 +34,5 @@ app.use(function errorHandler(error, req, res, next) {
   }
   res.status(500).json(response);
 });
-
-var chat = io
-  .of('/game')
-  .on('connection', (socket) => {
-    socket.emit('lookie here!', {
-      that: 'only',
-      '/chat': 'will get'
-    });
-  });
 
 module.exports = app;

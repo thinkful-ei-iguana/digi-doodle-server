@@ -26,7 +26,8 @@ GameRouter
         return res.status(404).json({
           error: 'No game found!'
         });
-      res.send(game);
+      res.send(game);  
+
     } catch(error) {
       next(error);
     }
