@@ -24,7 +24,7 @@ GameRouter
         if (numPlayers < 4 && !playerIds.includes(playerId))  {
           await GameServices.addGamePlayer(req.app.get('db'), game.id, playerId, username);
           console.log('join existing: ', game.id);
-          res.send(game.id);
+          res.send({gameId: game.id});
           return;
         }
 
@@ -39,7 +39,7 @@ GameRouter
       const newGame = await GameServices.createGame(req.app.get('db'));
       console.log('join new: ', newGame.id);
       await GameServices.addGamePlayer(req.app.get('db'), newGame.id, playerId, username);
-      res.send(newGame.id);
+      res.send({gameId: newGame.id});
     } catch(error) {
       next(error);
     }
