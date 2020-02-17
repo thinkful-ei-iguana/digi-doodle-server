@@ -1,9 +1,9 @@
 require('dotenv').config();
 const app = require('./app');
 const knex = require('knex');
-const io = require('socket.io');
 const http = require('http');
 const server = http.createServer(app);
+const io = require('socket.io')(server);
 const { PORT, DATABASE_URL } = require('./config');
 
 
@@ -13,16 +13,22 @@ const db = knex({
 });
 
 app.set('db', db);
+let tempRoom = [];
 
-io(server)
+io
   .on('connection', (socket) => {
     socket.on('sendRoom', (room) => {
 
       socket.join(room);
-      socket.emit('chat message', `joined room ${room}`);
+      tempRoom.push(room);
+      console.log(tempRoom);
+      io.to(room).emit('chat message', `joined room ${room}`);
       socket.on('guess', (guess) => {
         console.log('guess here: ', guess);
         socket.emit('chat message', `${guess}`);
+      });
+      socket.on('drawing', (data) => {
+
       });
     });
 
@@ -31,6 +37,8 @@ io(server)
     });
 
   });
+
+
 
 server.listen(PORT, function() {
   console.log(`Server listening at http://localhost:${PORT}`);
