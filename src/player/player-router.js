@@ -13,7 +13,7 @@ PlayerRouter
   
     if (!userName){
       return res.status(404).json({
-        error: 'No username found!'
+        error: 'Request must include a username'
       });
     }
     try{
@@ -33,15 +33,6 @@ PlayerRouter
     } catch(error) {
       next(error);
     }
-  });
-
-PlayerRouter
-  .delete('/:playerId', (req, res, next) => {
-    PlayerServices.deletePlayer(req.app.get('db'), req.params.playerId)
-      .then(() => 
-        res.send(204)
-      )
-      .catch(next);
   });
 
 module.exports = PlayerRouter;

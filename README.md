@@ -44,7 +44,7 @@ Receives a username in a req.body and then writes a new user to the database. Th
 > **Body**:
 >```json
 >{
->	"error": "No username found!"
+>	"error": "Request must include a username"
 >}
 >```
 
@@ -53,24 +53,9 @@ Receives a username in a req.body and then writes a new user to the database. Th
 > **Body**:
 >```json
 >{
->	"error": "No username found!"
+>	"error": "Duplicate usernames are not allowed"
 >}
 >```
-
-~~____________________________________________________~~
-
-## /api/player/:player_id - POST
-Deletes the player. Returns 204 (no content) if successful.
-
-**Request Format**:
-No request body required.
-
-**Success Response**
-> **Code** : `204 No Content`
-
-
-**Error Response**
->No error handling thus far
 
 ~~____________________________________________________~~
 
