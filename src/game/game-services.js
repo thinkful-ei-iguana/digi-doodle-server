@@ -37,6 +37,7 @@ const GameServices = {
   },
 
   async addGamePlayer(db, gameId, playerId, username){
+    console.log(gameId, playerId, username);
     const players = await this.getPlayers(db, gameId);
     let gamePlayer;
 

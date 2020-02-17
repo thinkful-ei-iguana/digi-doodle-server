@@ -11,9 +11,12 @@ GameRouter
   .route('/join')
   .post(async (req, res, next) => {
     try{
-      const { playerId, username} = req.body;
+      const { playerId, username } = req.body;
+      console.log('playerId: ', playerId);
+      console.log('username: ', username);
 
       const allGames = await GameServices.getAllGames(req.app.get('db'));
+      console.log(allGames);
       //  If a game exists with less than 4 players, add player to that game
       //  and return the game id
       for (let game of allGames) {
@@ -24,7 +27,7 @@ GameRouter
         if (numPlayers < 4 && !playerIds.includes(playerId))  {
           await GameServices.addGamePlayer(req.app.get('db'), game.id, playerId, username);
           console.log('join existing: ', game.id);
-          res.send(game.id);
+          res.send([ game.id ]);
           return;
         }
 
@@ -36,10 +39,10 @@ GameRouter
       } 
       //  If there are no games with available seats, create a new game and 
       //  return its id
-      const newGame = await GameServices.createGame(req.app.get('db'));
-      console.log('join new: ', newGame.id);
+      let newGame = await GameServices.createGame(req.app.get('db'));
+      console.log('join new: ', newGame[0].id);
       await GameServices.addGamePlayer(req.app.get('db'), newGame.id, playerId, username);
-      res.send(newGame.id);
+      res.send([newGame[0].id]);
     } catch(error) {
       next(error);
     }

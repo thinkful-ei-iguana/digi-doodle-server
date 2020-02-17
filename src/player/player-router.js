@@ -27,7 +27,7 @@ PlayerRouter
         req.app.get('db'),
         userName
       );
-     
+      console.log('playerId response: ', playerId);
       res.send(playerId);
 
     } catch(error) {
