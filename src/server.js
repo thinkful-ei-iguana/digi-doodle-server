@@ -33,7 +33,7 @@ io
 
       socket.on('sketch', (data) => {
         console.log(data.objects);
-        io.to(room).emit('sketch', data);
+        socket.to(room).broadcast.emit('sketch return', data);
       });
     });
 
