@@ -22,6 +22,13 @@ const GameServices = {
       .select('*');
   },
 
+  getGame(db, gameId) {
+    return db
+      .from('game')
+      .select('*')
+      .where('id', gameId);
+  },
+
   getPlayers(db, gameId) {
     return db
       .from('game_players')
@@ -63,7 +70,7 @@ const GameServices = {
           next_player: playerId
         });
     }
-    
+
     return db
       .insert(gamePlayer)
       .into('game_players');
@@ -89,11 +96,11 @@ const GameServices = {
       .delete();
   },
 
-  changeGame(db, change){
-    //change to database will go in here.
-
+  updateGame(db, gameId, data){
+    return db('game')
+      .where('id', gameId)
+      .update(data);
   }
-
 
 };
 

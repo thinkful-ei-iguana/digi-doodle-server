@@ -3,6 +3,7 @@ const GameServices = require('./game-services');
 
 const GameRouter = express.Router();
 const BodyParser = express.json();
+const gameHelpers = require('./game-helpers');
 
 GameRouter
   .use(BodyParser);
@@ -43,7 +44,7 @@ GameRouter
     } catch(error) {
       next(error);
     }
-  })
+  });
 
 GameRouter
   .post('/guess', async (req, res, next) => {
@@ -113,6 +114,18 @@ GameRouter
       await GameServices.deleteGame(req.app.get('db'), id);
       
       res.send(204).end();
+    } catch(error) {
+      next(error);
+    }
+  });
+
+GameRouter
+  .route('/test')
+  .post(BodyParser, async (req, res, next) => {
+    try {
+      const a = await gameHelpers.checkForWinner(req.app.get('db'), req.body.game_id);
+      res.status(200).json(a);
+
     } catch(error) {
       next(error);
     }
