@@ -102,7 +102,7 @@ const GameServices = {
       .where('id', gameId)
       .update(data);
   }
-
+  
 };
 
 module.exports = GameServices;
