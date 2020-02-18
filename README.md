@@ -22,6 +22,49 @@ OTHER TOOLS -
 ![alt text here](screenshot link here and repeat as needed)
 
 
+## Game lifecycle states
+1. 'waiting for players'
+> ```js
+>	{
+>		id: 'game uuid',
+> 	current_drawer: null,
+> 	current_answer: null,
+> 	status: 'waiting for players',
+> 	winner: null
+> }
+>```
+2. 'standby'
+> ```js
+>	{
+>		id: 'game uuid',
+> 	current_drawer: 'drawer uuid', //drawer who is up next
+> 	current_answer: null,
+> 	status: 'standby',
+> 	winner: null
+> }
+>```
+2. 'drawing'
+> ```js
+>	{
+>		id: 'game uuid',
+> 	current_drawer: 'drawer uuid',
+> 	current_answer: 'current answer',
+> 	status: 'standby',
+> 	winner: null
+> }
+>```
+2. Game ended
+> ```js
+>	{
+>		id: 'game uuid',
+> 	current_drawer: 'drawer uuid',
+> 	current_answer: 'current answer',
+> 	status: 'standby',
+> 	winner: 'winner username'
+> }
+>```
+
+
 ## /api/player - POST
 Receives a username in a req.body and then writes a new user to the database. This returns the userID (UUID).
 
