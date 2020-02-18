@@ -25,13 +25,10 @@ io
 
       // when a player submits a guess
       socket.on('guess', (guess) => {
-        
         console.log('guess here: ', guess);
-        
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
         //function to check guess?
         socket.emit('announcement', `got it correct. it's a ${guess}`);
-
       });
 
       // updating canvas
@@ -40,13 +37,19 @@ io
         socket.to(room).broadcast.emit('sketch return', data);
       });
 
+      // send a game when client requests
+      socket.on('get game', async () => {
+        const game = await GameHelpers.startGame(db, room);
+        io.to(room).emit('send game', game);
+      });
+
       // starting the game
       socket.on('start check', async () => {
         const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
         if (numPlayers === 2) {
-          const game = await GameHelpers.startGame(db, room);
           io.to(room).emit('send game', game);
+          const game = await GameHelpers.startGame(db, room);
         }
       });
     });
