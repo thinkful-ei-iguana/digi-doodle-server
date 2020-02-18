@@ -4,7 +4,6 @@ const GameServices = require('./game-services');
 const GameRouter = express.Router();
 const BodyParser = express.json();
 const gameHelpers = require('./game-helpers');
-const io = require('../server');
 
 GameRouter
   .use(BodyParser);
@@ -28,7 +27,6 @@ GameRouter
 
         if (numPlayers < 4 && !playerIds.includes(playerId))  {
           await GameServices.addGamePlayer(req.app.get('db'), game.id, playerId, username);
-          // io.emit('chat response', 'game started');
           console.log('join existing: ', game.id);
           res.send([ game.id ]);
           return;

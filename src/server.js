@@ -42,11 +42,11 @@ io
 
       // starting the game
       socket.on('start check', async () => {
-        const players = await GameServices.getPlayers(room);
+        const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
         if (numPlayers === 2) {
-          const game = await GameHelpers.startGame(app.get('db'), room);
-          socket.to(room).emit('send game', game);
+          const game = await GameHelpers.startGame(db, room);
+          io.to(room).emit('send game', game);
         }
       });
     });
