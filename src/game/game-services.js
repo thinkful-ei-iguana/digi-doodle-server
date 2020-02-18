@@ -4,7 +4,6 @@ const GameServices = {
   createGame(db) {
     const game = {
       id: uuid(),
-      canvas: '',
       current_drawer: null,
       current_answer: null,
       time_limit: 6000

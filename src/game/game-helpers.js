@@ -12,6 +12,9 @@ const GameHelpers = {
       status: 'standby',
       current_drawer: firstDrawer
     });
+
+    const updatedGame = await GameServices.getGame(db, gameId);
+    return updatedGame;
   },
 
   async startTurn(db, gameId) {
