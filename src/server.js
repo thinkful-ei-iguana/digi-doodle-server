@@ -13,15 +13,12 @@ const db = knex({
 });
 
 app.set('db', db);
-let tempRoom = [];
 
 io
   .on('connection', (socket) => {
     socket.on('sendRoom', (room) => {
 
       socket.join(room);
-      tempRoom.push(room);
-      console.log(tempRoom);
       io.to(room).emit('chat message', `joined room ${room}`);
 
       socket.on('guess', (guess) => {
@@ -31,9 +28,12 @@ io
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
         //function to check guess?
         socket.emit('announcement', `got it correct. it's a ${guess}`);
-      });
-      socket.on('drawing', (data) => {
 
+      });
+
+      socket.on('sketch', (data) => {
+        console.log(data.objects);
+        io.to(room).emit('sketch', data);
       });
     });
 

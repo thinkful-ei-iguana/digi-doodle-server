@@ -41,7 +41,7 @@ GameRouter
       //  return its id
       let newGame = await GameServices.createGame(req.app.get('db'));
       console.log('join new: ', newGame[0].id);
-      await GameServices.addGamePlayer(req.app.get('db'), newGame.id, playerId, username);
+      await GameServices.addGamePlayer(req.app.get('db'), newGame[0].id, playerId, username);
       res.send([newGame[0].id]);
     } catch(error) {
       next(error);
