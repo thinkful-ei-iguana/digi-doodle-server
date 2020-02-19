@@ -19,17 +19,38 @@ app.set('db', db);
 io
   .on('connection', (socket) => {
     socket.on('sendRoom', (data) => {
-      const { gameId, userId, username } = data;
+      const {gameId, userId, username} = data;
       const room = gameId;
-
+      socket.userId = userId;
+      socket.username = username;
       socket.join(room);
+    
       io.to(room).emit('chat message', `joined room ${room}`);
 
       // when a player submits a guess
-      socket.on('guess', (guess) => {
-        // console.log('guess here: ', guess);
+      socket.on('guess', async (guess) => {
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
-        //function to check guess?
+
+        const isCorrect = await GameHelpers.checkGuess(db, room, guess);
+
+        if (isCorrect) {
+          const game = await GameServices.getGame(db, room);
+          // give two points to drawer
+          await GameHelpers.givePoint(db, room, game.current_drawer, 2);
+          // give one point to guesser
+          await GameHelpers.givePoint(db, room, socket.userId, 1);
+          const isWinner = await GameHelpers.checkForWinner(db, room);
+
+          if (isWinner) {
+            await GameHelpers.endTurn(db, room);
+            await GameServices.updateGame(db, room, {winner: isWinner});
+            const endedGame = await GameServices.getGame(db, room);
+            io.to(room).emit('send game', endedGame);
+          } else {
+            await GameHelpers.endTurn(db, room);
+            
+          }
+        }
         socket.emit('announcement', `got it correct. it's a ${guess}`);
       });
 
