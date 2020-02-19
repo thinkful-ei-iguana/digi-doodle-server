@@ -82,6 +82,14 @@ const GameHelpers = {
         score: highestScore
       };
     }
+  },
+
+  async useTimer(io, room, seconds) {
+    while (seconds >= 0) {
+      await setTimeout(() => {
+        io.to(room).emit('timer', seconds--);
+      }, 1000);
+    }
   }
 };
 

@@ -44,7 +44,7 @@ io
 
       // send a game when client requests
       socket.on('get game', async () => {
-        const game = await GameHelpers.startGame(db, room);
+        const game = await GameServices.getGame(db, room);
         io.to(room).emit('send game', game);
       });
 
@@ -55,6 +55,9 @@ io
         if (numPlayers === 2) {
           io.to(room).emit('send game', game);
           const game = await GameHelpers.startGame(db, room);
+          let seconds = 10;
+          await GameHelpers.useTimer(io, room, seconds);
+          await GameHelpers.startTurn(db, room);
         }
       });
     });
