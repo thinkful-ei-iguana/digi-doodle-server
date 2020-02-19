@@ -20,12 +20,11 @@ io
   .on('connection', (socket) => {
     socket.on('sendRoom', async (data) => {
       const {gameId, userId, username} = data;
-      console.log('gameId: ', gameId);
-      console.log('userId: ', userId);
-      console.log('username: ', username);
+
       const room = gameId;
       socket.userId = userId;
       socket.username = username;
+
       socket.join(room);
     
       io.to(room).emit('chat message', `joined room ${room}`);
@@ -35,12 +34,11 @@ io
       // when a player submits a guess
       socket.on('guess', async (guess) => {
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
-        console.log(guess.message);
+
         const isCorrect = await GameHelpers.checkGuess(db, room, guess.message);
 
         if (isCorrect) {
           const game = await GameServices.getGame(db, room);
-          console.log('current drawer to give points to: ', game[0].current_drawer);
           // give two points to drawer
           await GameHelpers.givePoint(db, room, game[0].current_drawer, 2);
           // give one point to guesser
@@ -62,9 +60,7 @@ io
             let seconds = 10;
             let interval = setInterval( async () => {
               if (seconds > 0) {
-                console.log(seconds);
                 io.to(room).emit('timer', seconds);
-                io.to(room).emit('chat response', { player: 'Countdown!', message: `${seconds}`});
                 seconds--;
               } else {
                 clearInterval(interval);
@@ -96,10 +92,8 @@ io
 
       // starting the game
       socket.on('start check', async (msg) => {
-        console.log(msg);
         const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
-        console.log('numplayers: ', numPlayers);
 
         if (numPlayers === 2) {
           const game = await GameHelpers.startGame(db, room);
@@ -107,9 +101,7 @@ io
           let seconds = 10;
           let interval = setInterval( async () => {
             if (seconds > 0) {
-              console.log(seconds);
               io.to(room).emit('timer', seconds);
-              io.to(room).emit('chat response', { player: 'Countdown!', message: `${seconds}`});
               seconds--;
             } else {
               clearInterval(interval);
