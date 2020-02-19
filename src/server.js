@@ -20,6 +20,9 @@ io
   .on('connection', (socket) => {
     socket.on('sendRoom', async (data) => {
       const {gameId, userId, username} = data;
+      console.log('gameId: ', gameId);
+      console.log('userId: ', userId);
+      console.log('username: ', username);
       const room = gameId;
       socket.userId = userId;
       socket.username = username;
@@ -32,14 +35,16 @@ io
       // when a player submits a guess
       socket.on('guess', async (guess) => {
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
-        const isCorrect = await GameHelpers.checkGuess(db, room, guess);
+        console.log(guess.message);
+        const isCorrect = await GameHelpers.checkGuess(db, room, guess.message);
 
         if (isCorrect) {
           const game = await GameServices.getGame(db, room);
+          console.log('current drawer to give points to: ', game[0].current_drawer);
           // give two points to drawer
-          await GameHelpers.givePoint(db, room, game.current_drawer, 2);
+          await GameHelpers.givePoint(db, room, game[0].current_drawer, 2);
           // give one point to guesser
-          await GameHelpers.givePoint(db, room, socket.userId, 1);
+          await GameHelpers.givePoint(db, room, userId, 1);
           // send game with new player scores?
           const players = await GameServices.getPlayers(db, room);
           io.to(room).emit('send players', players);
