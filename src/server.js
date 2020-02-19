@@ -47,6 +47,8 @@ io
           const players = await GameServices.getPlayers(db, room);
           io.to(room).emit('send players', players);
 
+          io.to(room).emit('chat response', { player: 'Lobby', message: `${guess.player} got it correct. They were drawing ${guess.message}.` });
+
           // See if a player won the game
           const isWinner = await GameHelpers.checkForWinner(db, room);
 
@@ -91,7 +93,7 @@ io
       });
 
       // starting the game
-      socket.on('start check', async (msg) => {
+      socket.on('start check', async () => {
         const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
 
