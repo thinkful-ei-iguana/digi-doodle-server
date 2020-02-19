@@ -18,7 +18,9 @@ app.set('db', db);
 
 io
   .on('connection', (socket) => {
-    socket.on('sendRoom', (room) => {
+    socket.on('sendRoom', (data) => {
+      const { gameId, userId, username } = data;
+      const room = gameId;
 
       socket.join(room);
       io.to(room).emit('chat message', `joined room ${room}`);
@@ -59,19 +61,19 @@ io
           const game = await GameHelpers.startGame(db, room);
           io.to(room).emit('send game', game);
           let seconds = 10;
-          // while (seconds >= 0) {
-          //   let interval = setInterval( () => {
-          //     console.log(seconds);
-          //     io.to(room).emit('timer', seconds);
-          //     io.to(room).emit('chat response', `${seconds}`);
-          //   }, 1000);
-          //   clearInterval(interval);
-          //   seconds--;
-          // }
-          console.log('hit line 70');
-          await GameHelpers.startTurn(db, room);
-          const startedGame = await GameServices.getGame(db, room);
-          io.to(room).emit('send game', startedGame);
+          let interval = setInterval( async () => {
+            if (seconds > 0) {
+              console.log(seconds);
+              io.to(room).emit('timer', seconds);
+              io.to(room).emit('chat response', { player: 'Countdown!', message: `${seconds}`});
+              seconds--;
+            } else {
+              clearInterval(interval);
+              await GameHelpers.startTurn(db, room);
+              const startedGame = await GameServices.getGame(db, room);
+              io.to(room).emit('send game', startedGame);
+            }
+          }, 1000);          
         }
 
       });
