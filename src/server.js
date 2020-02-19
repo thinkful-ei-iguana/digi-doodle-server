@@ -57,6 +57,7 @@ io
             await GameServices.updateGame(db, room, {winner: isWinner});
             const endedGame = await GameServices.getGame(db, room);
             io.to(room).emit('send game', endedGame);
+            await GameServices.deleteGame(db, gameId);
           } else {
             await GameHelpers.endTurn(db, room);
             let seconds = 10;
