@@ -25,7 +25,7 @@ io
 
       // when a player submits a guess
       socket.on('guess', (guess) => {
-        console.log('guess here: ', guess);
+        // console.log('guess here: ', guess);
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
         //function to check guess?
         socket.emit('announcement', `got it correct. it's a ${guess}`);
@@ -38,7 +38,7 @@ io
 
       // updating canvas
       socket.on('sketch', (data) => {
-        console.log(data.objects);
+        // console.log(data.objects);
         socket.to(room).broadcast.emit('sketch return', data);
       });
 
@@ -49,23 +49,39 @@ io
       });
 
       // starting the game
-      socket.on('start check', async () => {
+      socket.on('start check', async (msg) => {
+        console.log(msg);
         const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
+        console.log('numplayers: ', numPlayers);
+
         if (numPlayers === 2) {
           const game = await GameHelpers.startGame(db, room);
           io.to(room).emit('send game', game);
           let seconds = 10;
-          await GameHelpers.useTimer(io, room, seconds);
+          // while (seconds >= 0) {
+          //   let interval = setInterval( () => {
+          //     console.log(seconds);
+          //     io.to(room).emit('timer', seconds);
+          //     io.to(room).emit('chat response', `${seconds}`);
+          //   }, 1000);
+          //   clearInterval(interval);
+          //   seconds--;
+          // }
+          console.log('hit line 70');
           await GameHelpers.startTurn(db, room);
+          const startedGame = await GameServices.getGame(db, room);
+          io.to(room).emit('send game', startedGame);
         }
+
       });
-    });
 
-    socket.on('disconnect', () => {
+      socket.on('disconnect', () => {
       
-    });
+      });
 
+
+    });
 
   });
 
