@@ -31,6 +31,11 @@ io
         socket.emit('announcement', `got it correct. it's a ${guess}`);
       });
 
+      // submitting chat without being able to guess the answer
+      socket.on('chat message', (msg) => {
+        io.to(room).emit('chat message', { player: msg.player, message: msg.message });
+      });
+
       // updating canvas
       socket.on('sketch', (data) => {
         console.log(data.objects);
@@ -54,10 +59,10 @@ io
       });
     });
 
-    // submitting chat without being able to guess the answer
-    socket.on('chat message', (msg) => {
-      io.emit('chat message', msg);
+    socket.on('disconnect', () => {
+      
     });
+
 
   });
 
