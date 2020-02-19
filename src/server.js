@@ -18,7 +18,7 @@ app.set('db', db);
 
 io
   .on('connection', (socket) => {
-    socket.on('sendRoom', (data) => {
+    socket.on('sendRoom', async (data) => {
       const {gameId, userId, username} = data;
       const room = gameId;
       socket.userId = userId;
@@ -26,11 +26,12 @@ io
       socket.join(room);
     
       io.to(room).emit('chat message', `joined room ${room}`);
+      const players = await GameServices.getPlayers(db, room);
+      io.to(room).emit('send players', players);
 
       // when a player submits a guess
       socket.on('guess', async (guess) => {
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
-
         const isCorrect = await GameHelpers.checkGuess(db, room, guess);
 
         if (isCorrect) {
@@ -39,19 +40,36 @@ io
           await GameHelpers.givePoint(db, room, game.current_drawer, 2);
           // give one point to guesser
           await GameHelpers.givePoint(db, room, socket.userId, 1);
+          // send game with new player scores?
+          const players = await GameServices.getPlayers(db, room);
+          io.to(room).emit('send players', players);
+
+          // See if a player won the game
           const isWinner = await GameHelpers.checkForWinner(db, room);
 
-          if (isWinner) {
+          if (isWinner) { // ends turn, populates the winner column and sends it to clients
             await GameHelpers.endTurn(db, room);
             await GameServices.updateGame(db, room, {winner: isWinner});
             const endedGame = await GameServices.getGame(db, room);
             io.to(room).emit('send game', endedGame);
           } else {
             await GameHelpers.endTurn(db, room);
-            
+            let seconds = 10;
+            let interval = setInterval( async () => {
+              if (seconds > 0) {
+                console.log(seconds);
+                io.to(room).emit('timer', seconds);
+                io.to(room).emit('chat response', { player: 'Countdown!', message: `${seconds}`});
+                seconds--;
+              } else {
+                clearInterval(interval);
+                await GameHelpers.startTurn(db, room);
+                const startedGameTurn = await GameServices.getGame(db, room);
+                io.to(room).emit('send game', startedGameTurn);
+              }
+            }, 1000);
           }
         }
-        socket.emit('announcement', `got it correct. it's a ${guess}`);
       });
 
       // submitting chat without being able to guess the answer
@@ -99,8 +117,9 @@ io
 
       });
 
-      socket.on('disconnect', () => {
-      
+      socket.on('disconnect', async () => {
+        const players = await GameServices.getPlayers(db, room);
+        io.to(room).emit('send players', players);
       });
 
 
