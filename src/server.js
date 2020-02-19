@@ -67,6 +67,7 @@ io
                 seconds--;
               } else {
                 clearInterval(interval);
+                io.to(room).emit('clear canvas', 'do it');
                 await GameHelpers.startTurn(db, room);
                 const startedGameTurn = await GameServices.getGame(db, room);
                 io.to(room).emit('send game', startedGameTurn);
@@ -111,6 +112,7 @@ io
               await GameHelpers.startTurn(db, room);
               const startedGame = await GameServices.getGame(db, room);
               io.to(room).emit('send game', startedGame);
+              io.to(room).emit('clear canvas', 'do it');
             }
           }, 1000);          
         }
