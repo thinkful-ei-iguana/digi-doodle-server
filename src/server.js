@@ -53,8 +53,8 @@ io
         const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
         if (numPlayers === 2) {
-          io.to(room).emit('send game', game);
           const game = await GameHelpers.startGame(db, room);
+          io.to(room).emit('send game', game);
           let seconds = 10;
           await GameHelpers.useTimer(io, room, seconds);
           await GameHelpers.startTurn(db, room);
@@ -68,8 +68,6 @@ io
 
 
   });
-
-module.exports = io;
 
 server.listen(PORT, function() {
   console.log(`Server listening at http://localhost:${PORT}`);
