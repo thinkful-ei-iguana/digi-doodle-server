@@ -114,7 +114,7 @@ io
           io.to(room).emit('send game', game);
           let seconds = 10;
           let interval = setInterval( async () => {
-            if (seconds > 0) {
+            if (seconds >= 0) {
               io.to(room).emit('timer', seconds);
               seconds--;
             } else {
