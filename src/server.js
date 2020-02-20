@@ -69,7 +69,7 @@ io
             
             let seconds = 16;
             let interval = setInterval( async () => {
-              if (seconds > 0) {
+              if (seconds >= 0) {
                 io.to(room).emit('timer', seconds);
                 if (seconds === 10) {
                   io.to(room).emit('results', null);
