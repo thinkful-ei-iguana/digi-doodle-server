@@ -25,7 +25,7 @@ GameRouter
         const numPlayers = gamePlayers.length;
         const playerIds = gamePlayers.map(player => player.player_id);
 
-        if (numPlayers < 4 && !playerIds.includes(playerId))  {
+        if (numPlayers < 6 && !playerIds.includes(playerId))  {
           await GameServices.addGamePlayer(req.app.get('db'), game.id, playerId, username);
           console.log('join existing: ', game.id);
           res.send([ game.id ]);
