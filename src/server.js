@@ -46,8 +46,10 @@ io
           // send game with new player scores?
           const players = await GameServices.getPlayers(db, room);
           io.to(room).emit('send players', players);
-
-          io.to(room).emit('chat response', { player: 'Lobby', message: `${guess.player} got it correct. They were drawing ${guess.message}.` });
+          const current_drawer = players.filter(p => p.player_id === game[0].current_drawer)[0].username;
+          console.log(players);
+          io.to(room).emit('chat response', { player: 'Lobby', message: `${current_drawer} gets two points for drawing.` });
+          io.to(room).emit('chat response', { player: 'Lobby', message: `${guess.player} gets one point for guessing correctly.` });
 
           // See if a player won the game
           const isWinner = await GameHelpers.checkForWinner(db, room);
@@ -60,14 +62,22 @@ io
             await GameServices.deleteGame(db, gameId);
           } else {
             await GameHelpers.endTurn(db, room);
-            let seconds = 10;
+            const endedGame = await GameServices.getGame(db, room);
+            io.to(room).emit('send game', endedGame);
+            // sends results of the round to clients
+            io.to(room).emit('results', `${guess.player} guessed correctly with ${guess.message}`);
+            
+            let seconds = 16;
             let interval = setInterval( async () => {
               if (seconds > 0) {
                 io.to(room).emit('timer', seconds);
+                if (seconds === 10) {
+                  io.to(room).emit('results', null);
+                  io.to(room).emit('clear canvas', 'do it');
+                }
                 seconds--;
               } else {
                 clearInterval(interval);
-                io.to(room).emit('clear canvas', 'do it');
                 await GameHelpers.startTurn(db, room);
                 const startedGameTurn = await GameServices.getGame(db, room);
                 io.to(room).emit('send game', startedGameTurn);
