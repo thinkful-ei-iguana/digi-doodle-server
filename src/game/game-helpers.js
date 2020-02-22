@@ -47,7 +47,6 @@ const GameHelpers = {
     await GameServices.updateGame(db, gameId, {
       status: 'standby', 
       current_drawer: nextDrawer,
-      current_answer: null
     });
   },
 
@@ -65,6 +64,9 @@ const GameHelpers = {
     await this.wait(6);
     io.to(room).emit('results', null);
     io.to(room).emit('clear canvas', 'do it');
+    await GameServices.updateGame(db, gameId, {
+      current_answer: null, 
+    });
     
     let seconds = 5;
     this.useTimer(db, io, room, seconds, async () => {
