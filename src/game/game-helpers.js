@@ -117,10 +117,7 @@ const GameHelpers = {
     if (winningPlayers.length === 0 || highestScore < 15) {
       return false;
     } else {
-      return {
-        winner: winningPlayers.join(' and '),
-        score: highestScore
-      };
+      return winningPlayers.join(' and ');
     }
   },
 
