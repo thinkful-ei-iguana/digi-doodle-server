@@ -18,6 +18,7 @@ app.set('db', db);
 
 io
   .on('connection', (socket) => {
+    
     socket.on('sendRoom', async (data) => {
       const {gameId, userId, username} = data;
       const room = gameId;
@@ -28,7 +29,7 @@ io
       GameHelpers.sendGame(db, io, room);      
 
       // test function
-      
+
 
       // when a player submits a guess
       socket.on('guess', async (guess) => {
@@ -53,7 +54,7 @@ io
 
           if (winner) { 
             // ends turn, populates the winner column and sends it to clients
-            GameHelpers.endGame(db, io, room, winner);
+            GameHelpers.endGame(db, io, room, winner);            
           } else { 
             //ends turn 
             await GameHelpers.endTurn(db, room);
@@ -90,8 +91,18 @@ io
       });
 
       socket.on('disconnect', async () => {
-        const players = await GameServices.getPlayers(db, room);
-        io.to(room).emit('send players', players);
+
+        let players =  io.of('/').in(room).clients(async(error, clients) => {
+          if (clients.length === 0) {
+            console.log('deleting game');
+            let playerIds = await GameServices.getPlayerIds(db, gameId);
+            await GameServices.deleteGame(db, gameId);
+            playerIds.forEach(async(playerId) => await GameServices.deletePlayer(db, playerId.player_id));
+          }
+          console.log(clients);
+          return clients;
+        });
+
       });
 
 

@@ -41,6 +41,8 @@ const GameHelpers = {
     const game = await GameServices.getGame(db, gameId);
     const players = await GameServices.getPlayers(db, gameId);
     
+    //add check to get current players
+
     const currentDrawer = players.filter(p => p.player_id === game[0].current_drawer);
     const nextDrawer = currentDrawer[0].next_player;
     
@@ -137,6 +139,7 @@ const GameHelpers = {
 
       //if status changes, cancels interval
       const currentGame = await GameServices.getGame(db, room);
+      if (!currentGame) clearInterval(interval);
       const currentStatus = currentGame[0].status;
       if (currentStatus !== orgStatus || currentGame[0].winner) {
         clearInterval(interval);
@@ -166,7 +169,9 @@ const GameHelpers = {
     await GameServices.updateGame(db, gameId, {winner: winner});
     await this.sendGame(db, io, gameId);
     await this.wait(5);
+    let playerIds = await GameServices.getPlayerIds(db, gameId);
     await GameServices.deleteGame(db, gameId);
+    playerIds.forEach(async(playerId) => await GameServices.deletePlayer(db, playerId.player_id));
   },
 
   async sendGame(db, io, gameId) {
