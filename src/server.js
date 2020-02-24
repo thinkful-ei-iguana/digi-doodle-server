@@ -95,7 +95,9 @@ io
         let players =  io.of('/').in(room).clients(async(error, clients) => {
           if (clients.length === 0) {
             console.log('deleting game');
-            await GameHelpers.endGame(db, io, room, null);
+            let playerIds = await GameServices.getPlayerIds(db, gameId);
+            await GameServices.deleteGame(db, gameId);
+            playerIds.forEach(async(playerId) => await GameServices.deletePlayer(db, playerId.player_id));
           }
           console.log(clients);
           return clients;
