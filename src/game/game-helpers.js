@@ -166,7 +166,9 @@ const GameHelpers = {
     await GameServices.updateGame(db, gameId, {winner: winner});
     await this.sendGame(db, io, gameId);
     await this.wait(5);
+    let playerIds = await GameServices.getPlayerIds(db, gameId);
     await GameServices.deleteGame(db, gameId);
+    playerIds.forEach(async(playerId) => await GameServices.deletePlayers(db, playerId));
   },
 
   async sendGame(db, io, gameId) {

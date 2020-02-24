@@ -88,10 +88,24 @@ const GameServices = {
       .returning('*');
   },
 
+  getPlayerIds(db, gameId) {
+    return db
+      .from('game_players')
+      .select('player_id')
+      .where('game_id', gameId);
+  },
+
   deleteGame(db, gameId) {
     return db
       .from('game')
       .where('id', gameId)
+      .delete();
+  },
+
+  deletePlayers(db, playerId) {
+    return db
+      .from('game')
+      .where('id', playerId)
       .delete();
   },
 

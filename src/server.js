@@ -53,7 +53,7 @@ io
 
           if (winner) { 
             // ends turn, populates the winner column and sends it to clients
-            GameHelpers.endGame(db, io, room, winner);
+            GameHelpers.endGame(db, io, room, winner);            
           } else { 
             //ends turn 
             await GameHelpers.endTurn(db, room);
