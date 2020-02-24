@@ -18,18 +18,18 @@ app.set('db', db);
 
 io
   .on('connection', (socket) => {
+    
     socket.on('sendRoom', async (data) => {
       const {gameId, userId, username} = data;
-
       const room = gameId;
-      socket.userId = userId;
-      socket.username = username;
-
+      
       socket.join(room);
-    
-      io.to(room).emit('chat message', `joined room ${room}`);
-      const players = await GameServices.getPlayers(db, room);
-      io.to(room).emit('send players', players);
+      io.to(room).emit('chat message', `${username} joined room ${room}`);
+      GameHelpers.sendPlayers(db, io, room);
+      GameHelpers.sendGame(db, io, room);      
+
+      // test function
+
 
       // when a player submits a guess
       socket.on('guess', async (guess) => {
@@ -39,50 +39,26 @@ io
 
         if (isCorrect) {
           const game = await GameServices.getGame(db, room);
-          // give two points to drawer
+          // give two points to drawer, and one point to guesser
           await GameHelpers.givePoint(db, room, game[0].current_drawer, 2);
-          // give one point to guesser
           await GameHelpers.givePoint(db, room, userId, 1);
-          // send game with new player scores?
-          const players = await GameServices.getPlayers(db, room);
-          io.to(room).emit('send players', players);
-          const current_drawer = players.filter(p => p.player_id === game[0].current_drawer)[0].username;
-          console.log(players);
-          io.to(room).emit('chat response', { player: 'Lobby', message: `${current_drawer} gets two points for drawing.` });
+          const players = await GameHelpers.sendPlayers(db, io, room);
+
+          // notify players of point assignment in chat
+          const drawer = players.filter(p => p.player_id === game[0].current_drawer)[0].username;
+          io.to(room).emit('chat response', { player: 'Lobby', message: `${drawer} gets two points for drawing.` });
           io.to(room).emit('chat response', { player: 'Lobby', message: `${guess.player} gets one point for guessing correctly.` });
 
-          // See if a player won the game
-          const isWinner = await GameHelpers.checkForWinner(db, room);
+          // Captures the winner if someone won
+          const winner = await GameHelpers.checkForWinner(db, room);
 
-          if (isWinner) { // ends turn, populates the winner column and sends it to clients
+          if (winner) { 
+            // ends turn, populates the winner column and sends it to clients
+            GameHelpers.endGame(db, io, room, winner);            
+          } else { 
+            //ends turn 
             await GameHelpers.endTurn(db, room);
-            await GameServices.updateGame(db, room, {winner: isWinner});
-            const endedGame = await GameServices.getGame(db, room);
-            io.to(room).emit('send game', endedGame);
-            await GameServices.deleteGame(db, gameId);
-          } else {
-            await GameHelpers.endTurn(db, room);
-            const endedGame = await GameServices.getGame(db, room);
-            io.to(room).emit('send game', endedGame);
-            // sends results of the round to clients
-            io.to(room).emit('results', `${guess.player} guessed correctly with ${guess.message}`);
-            
-            let seconds = 16;
-            let interval = setInterval( async () => {
-              if (seconds >= 0) {
-                io.to(room).emit('timer', seconds);
-                if (seconds === 10) {
-                  io.to(room).emit('results', null);
-                  io.to(room).emit('clear canvas', 'do it');
-                }
-                seconds--;
-              } else {
-                clearInterval(interval);
-                await GameHelpers.startTurn(db, room);
-                const startedGameTurn = await GameServices.getGame(db, room);
-                io.to(room).emit('send game', startedGameTurn);
-              }
-            }, 1000);
+            await GameHelpers.startStandby(db, io, room, guess);
           }
         }
       });
@@ -94,44 +70,39 @@ io
 
       // updating canvas
       socket.on('sketch', (data) => {
-        // console.log(data.objects);
         socket.to(room).broadcast.emit('sketch return', data);
       });
 
       // send a game when client requests
       socket.on('get game', async () => {
-        const game = await GameServices.getGame(db, room);
-        io.to(room).emit('send game', game);
+        GameHelpers.sendGame(db, io, room);
       });
 
       // starting the game
       socket.on('start check', async () => {
         const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
+        const game = await GameServices.getGame(db, room);
 
-        if (numPlayers === 2) {
-          const game = await GameHelpers.startGame(db, room);
-          io.to(room).emit('send game', game);
-          let seconds = 10;
-          let interval = setInterval( async () => {
-            if (seconds >= 0) {
-              io.to(room).emit('timer', seconds);
-              seconds--;
-            } else {
-              clearInterval(interval);
-              await GameHelpers.startTurn(db, room);
-              const startedGame = await GameServices.getGame(db, room);
-              io.to(room).emit('send game', startedGame);
-              io.to(room).emit('clear canvas', 'do it');
-            }
-          }, 1000);          
+        if (numPlayers >= 2 && game[0].status === 'waiting for players') {
+          await GameHelpers.startGame(db, io, room);
         }
 
       });
 
       socket.on('disconnect', async () => {
-        const players = await GameServices.getPlayers(db, room);
-        io.to(room).emit('send players', players);
+
+        let players =  io.of('/').in(room).clients(async(error, clients) => {
+          if (clients.length === 0) {
+            console.log('deleting game');
+            let playerIds = await GameServices.getPlayerIds(db, gameId);
+            await GameServices.deleteGame(db, gameId);
+            playerIds.forEach(async(playerId) => await GameServices.deletePlayer(db, playerId.player_id));
+          }
+          console.log(clients);
+          return clients;
+        });
+
       });
 
 
@@ -142,4 +113,3 @@ io
 server.listen(PORT, function() {
   console.log(`Server listening at http://localhost:${PORT}`);
 });
-  

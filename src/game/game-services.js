@@ -43,7 +43,6 @@ const GameServices = {
   },
 
   async addGamePlayer(db, gameId, playerId, username){
-    console.log(gameId, playerId, username);
     const players = await this.getPlayers(db, gameId);
     let gamePlayer;
 
@@ -89,10 +88,24 @@ const GameServices = {
       .returning('*');
   },
 
+  getPlayerIds(db, gameId) {
+    return db
+      .from('game_players')
+      .select('player_id')
+      .where('game_id', gameId);
+  },
+
   deleteGame(db, gameId) {
     return db
       .from('game')
       .where('id', gameId)
+      .delete();
+  },
+
+  deletePlayer(db, playerId) {
+    return db
+      .from('player')
+      .where('id', playerId)
       .delete();
   },
 
