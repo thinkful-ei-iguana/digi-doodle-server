@@ -102,9 +102,9 @@ const GameServices = {
       .delete();
   },
 
-  deletePlayers(db, playerId) {
+  deletePlayer(db, playerId) {
     return db
-      .from('game')
+      .from('player')
       .where('id', playerId)
       .delete();
   },

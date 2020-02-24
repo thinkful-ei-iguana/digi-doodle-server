@@ -41,6 +41,8 @@ const GameHelpers = {
     const game = await GameServices.getGame(db, gameId);
     const players = await GameServices.getPlayers(db, gameId);
     
+    //add check to get current players
+
     const currentDrawer = players.filter(p => p.player_id === game[0].current_drawer);
     const nextDrawer = currentDrawer[0].next_player;
     
@@ -168,7 +170,7 @@ const GameHelpers = {
     await this.wait(5);
     let playerIds = await GameServices.getPlayerIds(db, gameId);
     await GameServices.deleteGame(db, gameId);
-    playerIds.forEach(async(playerId) => await GameServices.deletePlayers(db, playerId));
+    playerIds.forEach(async(playerId) => await GameServices.deletePlayer(db, playerId.player_id));
   },
 
   async sendGame(db, io, gameId) {

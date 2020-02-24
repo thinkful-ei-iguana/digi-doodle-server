@@ -18,6 +18,7 @@ app.set('db', db);
 
 io
   .on('connection', (socket) => {
+    
     socket.on('sendRoom', async (data) => {
       const {gameId, userId, username} = data;
       const room = gameId;
@@ -28,7 +29,7 @@ io
       GameHelpers.sendGame(db, io, room);      
 
       // test function
-      
+
 
       // when a player submits a guess
       socket.on('guess', async (guess) => {
@@ -90,8 +91,16 @@ io
       });
 
       socket.on('disconnect', async () => {
-        const players = await GameServices.getPlayers(db, room);
-        io.to(room).emit('send players', players);
+
+        let players =  io.of('/').in(room).clients(async(error, clients) => {
+          if (clients.length === 0) {
+            console.log('deleting game');
+            await GameHelpers.endGame(db, io, room, null);
+          }
+          console.log(clients);
+          return clients;
+        });
+
       });
 
 
