@@ -17,16 +17,13 @@ describe('Players', () => {
 
   });
 
+  before('clean db', () => db.raw('TRUNCATE TABLE player, game CASCADE'));
 
-  beforeEach('clean db', () => {
-    db('player').truncate();
-  });
+  after('disconnect', () => {db.destroy();});
 
-  afterEach('clean db', () => {
-    db('player').truncate();
-  });
 
   describe('POST /player', () => {
+
 
     context('no valid data', () => {
       it('should respond with a 404 error', () => {
@@ -72,9 +69,7 @@ describe('Game', () => {
     db.destroy();
   });
 
-  beforeEach('clean db', () => {
-    db('game').truncate();
-  });
+
 
   describe('POST /join', () => {
 
