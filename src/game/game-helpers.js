@@ -136,7 +136,11 @@ const GameHelpers = {
 
       //if status changes, cancels interval
       const currentGame = await GameServices.getGame(db, room);
-      if (!currentGame) clearInterval(interval);
+      
+      if (!currentGame.length)  {
+        return clearInterval(interval);
+      } 
+
       const currentStatus = currentGame[0].status;
       if (currentStatus !== orgStatus || currentGame[0].winner) {
         clearInterval(interval);

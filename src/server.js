@@ -83,11 +83,12 @@ io
         const players = await GameServices.getPlayers(db, room);
         const numPlayers = players.length;
         const game = await GameServices.getGame(db, room);
-
+        console.log('game is: ', game);
+        
         if (numPlayers >= 2 && game[0].status === 'waiting for players') {
           await GameHelpers.startGame(db, io, room);
         }
-
+        
       });
 
       socket.on('disconnect', async () => {
