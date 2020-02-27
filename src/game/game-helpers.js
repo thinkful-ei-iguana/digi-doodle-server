@@ -78,9 +78,9 @@ const GameHelpers = {
   },
 
   async checkGuess(db, gameId, guess) { 
-    let answer = await GameServices.getGame(db, gameId);
-    answer = answer[0].current_answer;
-    if (guess.toLowerCase().trim() === answer.toLowerCase().trim()) {
+    let game = await GameServices.getGame(db, gameId);
+    let answer = game[0].current_answer;
+    if (guess.toLowerCase().trim() === answer.toLowerCase().trim() && game[0].status === 'drawing') {
       return true;
     } else {
       return false;
