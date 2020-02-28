@@ -6,15 +6,18 @@ Lorem ipsum bla bla bla bla project description stuff here!
 
 ## Tech Stack:
 
-FRONT END - 
+*FRONT END* - 
 HTML | CSS | JS | REACT | RESTFUL API | COOKIES | SOCKET.IO | JEST | ENZYME
-BACK END - 
+
+*BACK END* - 
 NODE | EXPRESS | SOCKET.IO | MOCHA | CHAI
 
 ## Repo & Live Server Links
 
 [Live App](https://digi-doodle.now.sh/)
+
 [Client Repo](https://github.com/thinkful-ei-iguana/digi-doodle-client)
+
 [Server Repo](https://github.com/thinkful-ei-iguana/digi-doodle-server)
 
 ### Notes
