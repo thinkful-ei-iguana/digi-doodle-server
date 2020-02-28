@@ -2,7 +2,7 @@
 
 ## About 
 
-Lorem ipsum bla bla bla bla project description stuff here!
+DigiDoodle is an application that uses Canvas and Socket.io to re-create the classic game, Pictionary. A user can sign up with a username and be automatically navigated to an open avaliable game. Users take turns to draw and guess the corresponding prompts on the screen. When the prompt is answered correctly, the drawer is awarded 2 points and the user who guesses correctly receives one point. The first person who reaches 15 points wins the game!
 
 ## Tech Stack:
 
