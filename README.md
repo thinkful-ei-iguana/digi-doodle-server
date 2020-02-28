@@ -45,7 +45,7 @@ Digi-doodle uses websockets as a primary form of data exchange. As such, there a
 > 	winner: null
 > }
 >```
-2. 'drawing'
+3. 'drawing'
 > ```js
 >	{
 >		id: 'game uuid',
@@ -55,7 +55,7 @@ Digi-doodle uses websockets as a primary form of data exchange. As such, there a
 > 	winner: null
 > }
 >```
-2. Game ended
+4. Game ended
 > ```js
 >	{
 >		id: 'game uuid',
