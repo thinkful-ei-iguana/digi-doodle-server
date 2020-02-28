@@ -14,6 +14,16 @@ GameRouter
     try{
       const { playerId, username } = req.body;
 
+      if(!playerId){
+        return res.status(404).json({
+          error: 'Request must include a playerId'
+        });
+      } else if(!username){
+        return res.status(404).json({
+          error: 'Request must include a username'
+        });
+      }
+
       const allGames = await GameServices.getAllGames(req.app.get('db'));
       //  If a game exists with less than 4 players, add player to that game
       //  and return the game id
@@ -48,6 +58,14 @@ GameRouter
 GameRouter
   .route('/test')
   .post(BodyParser, async (req, res, next) => {
+    const { game_id } = req.body;
+
+    if(!game_id){
+      return res.send(404).json({
+        error: 'Request must include a game_id.'
+      });
+    }
+
     try {
       const a = await gameHelpers.checkForWinner(req.app.get('db'), req.body.game_id);
       res.status(200).json(a);

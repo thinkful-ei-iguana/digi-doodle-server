@@ -9,15 +9,15 @@ PlayerRouter
 
 PlayerRouter
   .post('/', async (req, res, next) => {
-    const userName = req.body.username;
-  
-    if (!userName){
+    const { username } = req.body;
+
+    if (!username){
       return res.status(404).json({
         error: 'Request must include a username'
       });
     }
     try{
-      let uniqueCheck = await PlayerServices.checkForUsername(req.app.get('db'), userName);
+      let uniqueCheck = await PlayerServices.checkForUsername(req.app.get('db'), username);
 
       if (uniqueCheck[0] !== undefined) {
         return res.status(400).json({ error: 'Duplicate usernames are not allowed' });
@@ -25,7 +25,7 @@ PlayerRouter
 
       const playerId = await PlayerServices.createPlayer(
         req.app.get('db'),
-        userName
+        username
       );
       console.log('playerId response: ', playerId);
       res.send(playerId);

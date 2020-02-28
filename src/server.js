@@ -36,8 +36,10 @@ io
         io.to(room).emit('chat response', { player: guess.player, message: guess.message });
 
         const isCorrect = await GameHelpers.checkGuess(db, room, guess.message);
+        let currentGame = await GameServices.getGame(db, room);
+        currentGame = currentGame[0];
 
-        if (isCorrect) {
+        if (isCorrect && currentGame.status === 'drawing') {
           const game = await GameServices.getGame(db, room);
           // give two points to drawer, and one point to guesser
           await GameHelpers.givePoint(db, room, game[0].current_drawer, 2);
